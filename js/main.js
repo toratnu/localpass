@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/localpass/service-worker.js')
+            .then((reg) => console.log('Service Worker registered', reg))
+            .catch((err) => console.error('Service Worker registration failed:', err));
+    }
+
     // DOM要素の取得
     const lockScreen = document.getElementById('lock-screen');
     const mainScreen = document.getElementById('main-screen');
