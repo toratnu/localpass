@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalPass - パスワード管理</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ロック画面 -->
+    <div id="lock-screen">
+        <h1>LocalPass</h1>
+        <p>お使いのブラウザで安全にパスワードを管理します。</p>
+
+        <details class="usage-notes">
+            <summary>初めてお使いの方へ / 注意事項</summary>
+            <div>
+                <h4>使い方</h4>
+                <ol>
+                    <li><strong>マスターパスワード設定:</strong> 初回利用時、推測されにくい強力なマスターパスワードを設定してください。これが全てのデータを保護する鍵となります。</li>
+                    <li><strong>ロック解除:</strong> 設定したマスターパスワードでロックを解除し、保存したパスワードにアクセスします。</li>
+                </ol>
+                <h4><strong>!! 重要事項 !!</strong></h4>
+                <ul>
+                    <li><strong>マスターパスワードは絶対に忘れないでください。</strong>忘れると、保存したデータは二度と復元できません。</li>
+                    <li>データは、お使いのブラウザ内(ローカルストレージ)にのみ保存されます。サーバーには送信されません。</li>
+                    <li>ブラウザの履歴やキャッシュを全消去すると、保存したデータも消える可能性があります。重要なデータは別途バックアップを取ることを推奨します。</li>
+                </ul>
+            </div>
+        </details>
+
+        <input type="password" id="master-password-input" placeholder="マスターパスワードを入力" title="設定したマスターパスワードを入力してください">
+        <div id="password-strength" style="display: none;">
+            <div id="password-strength-bar"></div>
+            <span id="password-strength-text"></span>
+        </div>
+        <p id="unlock-error-message" class="error-message"></p>
+        <button id="unlock-button" title="パスワード管理を開始します">🔑 ロック解除</button>
+        <button id="destroy-data-button" style="display: none;" title="注意: 保存されている全てのパスワードが削除され、元に戻せません。">🗑️ 全データを完全に削除</button>
+    </div>
+
+    <!-- メイン画面 -->
+    <div id="main-screen" style="display: none;">
+        <header>
+            <h1>パスワード一覧</h1>
+            <div class="header-controls">
+                <input type="search" id="search-input" placeholder="サービス名で検索" title="サービス名で登録済みパスワードを検索します">
+                <button id="add-password-button" title="新しいパスワードを登録します">➕ 新規追加</button>
+                <button id="change-master-password-button" title="マスターパスワードを変更します">🔄 マスターパスワード変更</button>
+                <button id="lock-button" title="アプリケーションをロックします">🔒 ロック</button>
+            </div>
+        </header>
+        <main>
+            <details class="usage-notes">
+                <summary>使い方ガイド</summary>
+                <div>
+                    <ul>
+                        <li><strong>新規追加:</strong> 右上の「新規追加」ボタンからパスワードを登録します。</li>
+                        <li><strong>検索:</strong> 検索ボックスにサービス名を入力すると、一覧を絞り込めます。</li>
+                        <li><strong>表示/非表示 (👁️):</strong> パスワードを一時的に表示・非表示します。</li>
+                        <li><strong>コピー (📋):</strong> パスワードをクリップボードにコピーします。</li>
+                        <li><strong>削除 (🗑️):</strong> 登録したパスワードを削除します。</li>
+                    </ul>
+                </div>
+            </details>
+            <ul id="password-list">
+                <!-- パスワード項目がここに追加される -->
+            </ul>
+        </main>
+    </div>
+
+    <!-- パスワード追加モーダル -->
+    <div id="add-password-modal" class="modal">
+        <div class="modal-content">
+            <h2>パスワードを新規追加</h2>
+            <input type="text" id="service-name-input" placeholder="サービス名 (例: Google)" title="どのサービス用のパスワードか分かりやすく入力します">
+            <input type="text" id="username-input" placeholder="ユーザーID/メールアドレス (任意)" title="ログインに使用するIDやメールアドレスです">
+            <input type="password" id="password-input" placeholder="パスワード" title="保存したいパスワードを入力します">
+            <div class="modal-buttons">
+                <button id="save-button" title="入力した内容を保存します">💾 保存</button>
+                <button id="cancel-button" title="入力をキャンセルして閉じます">❌ キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- マスターパスワード変更モーダル -->
+    <div id="change-master-password-modal" class="modal">
+        <div class="modal-content">
+            <h2>マスターパスワードの変更</h2>
+            <input type="password" id="current-master-password-input" placeholder="現在のマスターパスワード" title="現在使用しているマスターパスワードを入力します">
+            <input type="password" id="new-master-password-input" placeholder="新しいマスターパスワード" title="新しいマスターパスワードを入力します">
+            <div id="new-password-strength" style="display: none;">
+                <div id="new-password-strength-bar"></div>
+                <span id="new-password-strength-text"></span>
+            </div>
+            <input type="password" id="confirm-new-master-password-input" placeholder="新しいマスターパスワード（確認）" title="確認のため、新しいマスターパスワードをもう一度入力します">
+            <p class="modal-note">注意: マスターパスワードを変更すると、全てのデータが新しいパスワードで再暗号化されます。</p>
+            <div class="modal-buttons">
+                <button id="save-new-master-password-button" title="新しいマスターパスワードを保存します">💾 保存</button>
+                <button id="cancel-change-master-password-button" title="変更をキャンセルして閉じます">❌ キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/lib/crypto.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
