@@ -1,223 +1,557 @@
-/* 全体スタイル */
-body {
-    font-family: 'Segoe UI', 'Meiryo UI', sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f0f2f5;
-    color: #333;
-}
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* コンテナ */
-#lock-screen, #main-screen {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-hard: 0 20px 40px rgba(0, 0, 0, 0.4);
+            --border-radius: 20px;
+            --border-radius-small: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-h1 {
-    text-align: center;
-    color: #1a2b4d;
-    margin-top: 0;
-}
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-/* ヘッダー */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap; /* 画面が小さい場合に折り返す */
-}
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
 
-.header-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
 
-/* 入力フィールド */
-input[type="text"], input[type="password"], input[type="search"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 1em;
-}
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-hard);
+            width: 90%;
+            max-width: 800px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
 
-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-}
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
 
-/* ボタン */
-button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s;
-}
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-button:hover {
-    background-color: #0056b3;
-}
+        .logo h1 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
 
-#destroy-data-button {
-    background-color: #dc3545;
-}
+        .logo p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
 
-#destroy-data-button:hover {
-    background-color: #c82333;
-}
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-small);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
 
-/* パスワード強度バー */
-#password-strength, #new-password-strength {
-    height: 10px;
-    background-color: #e9ecef;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
 
-#password-strength-bar, #new-password-strength-bar {
-    height: 100%;
-    border-radius: 5px;
-    transition: width 0.3s, background-color 0.3s;
-}
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
 
-#password-strength-text, #new-password-strength-text {
-    font-size: 0.9em;
-    margin-top: 5px;
-    display: block;
-}
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-small);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
 
-/* エラーメッセージ */
-.error-message {
-    color: #dc3545;
-    font-size: 0.9em;
-    min-height: 1.2em; /* 高さを確保 */
-    margin-top: 10px;
-    text-align: center;
-}
+        .input-field::placeholder {
+            color: var(--text-primary); /* より明るい色に */
+        }
 
-/* パスワードリスト */
-#password-list {
-    list-style: none;
-    padding: 0;
-}
+        .input-field:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
 
-#password-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-}
+        .password-strength {
+            margin-top: 0.5rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
 
-#password-list li:last-child {
-    border-bottom: none;
-}
+        .password-strength.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-.service-username {
-    font-weight: bold;
-}
+        .strength-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
 
-.password-value {
-    color: #007bff;
-    margin-left: 8px;
-    font-family: monospace;
-}
+        .strength-progress {
+            height: 100%;
+            border-radius: 3px;
+            transition: var(--transition);
+            background: var(--danger-gradient);
+        }
 
-.controls button {
-    margin-left: 8px;
-    padding: 6px 12px;
-    font-size: 0.9em;
-}
+        .strength-progress.medium {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        }
 
-/* モーダル */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
-}
+        .strength-progress.strong {
+            background: var(--success-gradient);
+        }
 
-.modal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 25px;
-    border: 1px solid #888;
-    width: 90%;
-    max-width: 450px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
+        .strength-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
 
-.modal-content h2 {
-    margin-top: 0;
-}
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
 
-.modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-}
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
 
-.modal-buttons button {
-    min-width: 100px;
-}
+        .btn:hover::before {
+            left: 100%;
+        }
 
-.modal-buttons button[id*="cancel"] {
-    background-color: #6c757d;
-}
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
 
-.modal-buttons button[id*="cancel"]:hover {
-    background-color: #5a6268;
-}
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
 
-.modal-note {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 15px;
-}
+        .btn-danger {
+            background: var(--secondary-gradient);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
 
-/* 使い方・注意事項 */
-.usage-notes {
-    margin: 20px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+        }
 
-.usage-notes summary {
-    padding: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: #f7f7f7;
-}
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
 
-.usage-notes div {
-    padding: 15px;
-    border-top: 1px solid #ddd;
-}
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
 
-.usage-notes h4 {
-    margin-top: 0;
-}
+        .error-message {
+            background: rgba(250, 112, 154, 0.2);
+            color: #ff6b9d;
+            padding: 1rem;
+            border-radius: var(--border-radius-small);
+            border: 1px solid rgba(250, 112, 154, 0.3);
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
 
-.usage-notes ul, .usage-notes ol {
-    padding-left: 20px;
-}
+        .collapsible {
+            margin-bottom: 2rem;
+        }
+
+        .collapsible-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .collapsible-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible.active .collapsible-content {
+            max-height: 400px;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+        }
+
+        .collapsible-content h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .collapsible-content ul,
+        .collapsible-content ol {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-left: 1.5rem;
+        }
+
+        .collapsible-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-container::before {
+            content: '🔍';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-primary); /* アイコンの色をより明るく */
+            z-index: 1;
+        }
+
+        .search-input {
+            padding-left: 3rem;
+            background: rgba(255, 255, 255, 0.15); /* 背景色を少し濃く */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-small);
+            color: var(--text-primary);
+            width: 100%;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            padding-right: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-primary); /* より明るい色に */
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.4); /* フォーカス時のシャドウを強調 */
+            transform: translateY(-1px);
+        }
+
+        .password-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-small);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .password-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .password-info {
+            flex: 1;
+        }
+
+        .service-name {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .username {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .password-value {
+            color: #4facfe;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .password-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.75rem;
+            min-width: auto;
+            border-radius: 50%;
+            font-size: 1.1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; } 
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-controls {
+                flex-direction: column; /* 追加 */
+                align-items: stretch; /* 追加 */
+                justify-content: center;
+            }
+
+            .search-container {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .password-item {
+                flex-direction: column;
+                align-items: flex-start; /* 左寄せに変更 */
+                gap: 1rem;
+            }
+
+            .password-info {
+                width: 100%; /* 幅を100%に */
+                margin-bottom: 0.5rem; /* 下に少し余白 */
+            }
+
+            .password-controls {
+                width: 100%; /* 幅を100%に */
+                justify-content: flex-start; /* 左寄せに変更 */
+            }
+
+            .password-controls {
+                justify-content: center;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+        }
+    </style>
