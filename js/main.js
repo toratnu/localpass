@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveNewMasterPasswordButton = document.getElementById('save-new-master-password-button');
     const cancelChangeMasterPasswordButton = document.getElementById('cancel-change-master-password-button');
 
+    // DOM要素の取得 (追加分)
+    const downloadButton = document.getElementById('download-button');
+    const uploadButton = document.getElementById('upload-button');
+    const importPasswordModal = document.getElementById('import-password-modal');
+    const importFileInput = document.getElementById('import-file-input');
+    const importMasterPasswordInput = document.getElementById('import-master-password-input');
+    const confirmImportButton = document.getElementById('confirm-import-button');
+    const cancelImportButton = document.getElementById('cancel-import-button');
+    const importErrorMessage = document.getElementById('import-error-message');
+
     let masterPassword = '';
     let passwords = [];
     const MAX_ATTEMPTS = 10;
@@ -51,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(modalId).classList.remove('active');
     }
 
-    function showError(message) {
-        unlockErrorMessage.textContent = message;
-        unlockErrorMessage.style.display = 'block';
+    function showError(message, targetElement = unlockErrorMessage) {
+        targetElement.textContent = message;
+        targetElement.style.display = 'block';
         setTimeout(() => {
-            unlockErrorMessage.style.display = 'none';
+            targetElement.style.display = 'none';
         }, 3000);
     }
 
@@ -67,6 +77,67 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.querySelectorAll('.password-strength').forEach(strength => {
             strength.classList.remove('visible');
         });
+    }
+
+    // --- ダウンロード機能 ---
+    async function exportPasswords() {
+        if (passwords.length === 0) {
+            alert('保存されたパスワードがありません。');
+            return;
+        }
+        const encryptedData = await encrypt(JSON.stringify(passwords), masterPassword);
+        const blob = new Blob([encryptedData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `localpass_export_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        alert('パスワードデータをダウンロードしました。');
+    }
+
+    // --- アップロード機能 ---
+    async function importPasswords() {
+        const file = importFileInput.files[0];
+        const importPassword = importMasterPasswordInput.value;
+
+        if (!file) {
+            showError('ファイルを選択してください。', importErrorMessage);
+            return;
+        }
+        if (!importPassword) {
+            showError('マスターパスワードを入力してください。', importErrorMessage);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            try {
+                const encryptedData = event.target.result;
+                const decryptedData = await decrypt(encryptedData, importPassword);
+
+                if (decryptedData) {
+                    const importedPasswords = JSON.parse(decryptedData);
+                    if (!Array.isArray(importedPasswords)) {
+                        throw new Error('インポートされたデータ形式が不正です。');
+                    }
+                    // 既存のパスワードとマージするか、上書きするかはユーザーの選択によるが、今回は上書き
+                    passwords = importedPasswords;
+                    await saveData();
+                    displayPasswords();
+                    hideModal('import-password-modal');
+                    alert('パスワードデータをインポートしました。');
+                } else {
+                    showError('マスターパスワードが違います、またはファイルが破損しています。', importErrorMessage);
+                }
+            } catch (e) {
+                console.error('インポートエラー:', e);
+                showError('ファイルの読み込みまたは復号に失敗しました。', importErrorMessage);
+            }
+        };
+        reader.readAsText(file);
     }
 
     // --- パスワード強度チェック ---
@@ -354,6 +425,16 @@ document.addEventListener('DOMContentLoaded', () => {
             unlockButton.click();
         }
     });
+
+    // ダウンロード・アップロードボタンのイベントリスナー
+    downloadButton.addEventListener('click', exportPasswords);
+    uploadButton.addEventListener('click', () => {
+        showModal('import-password-modal');
+        clearModalInputs('import-password-modal');
+        importErrorMessage.style.display = 'none'; // エラーメッセージを非表示に
+    });
+    confirmImportButton.addEventListener('click', importPasswords);
+    cancelImportButton.addEventListener('click', () => hideModal('import-password-modal'));
 
     // --- 初期化処理 ---
     const masterPasswordStrengthListener = () => {

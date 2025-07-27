@@ -66,6 +66,12 @@
                 <button class="btn btn-primary" id="add-password-button">
                     ➕ 新規追加
                 </button>
+                <button class="btn btn-secondary" id="download-button">
+                    ⬇️ ダウンロード
+                </button>
+                <button class="btn btn-secondary" id="upload-button">
+                    ⬆️ アップロード
+                </button>
                 <button class="btn btn-secondary" id="change-master-password-button">
                     🔄 変更
                 </button>
@@ -144,6 +150,29 @@
             <div class="modal-buttons">
                 <button class="btn btn-secondary" id="cancel-change-master-password-button">❌ キャンセル</button>
                 <button class="btn btn-primary" id="save-new-master-password-button">💾 保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- パスワードインポートモーダル -->
+    <div class="modal" id="import-password-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>パスワードをインポート</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                暗号化されたパスワードファイルを選択し、現在のマスターパスワードを入力してください。
+            </p>
+            <div class="input-group">
+                <input type="file" class="input-field" id="import-file-input" accept=".json">
+            </div>
+            <div class="input-group">
+                <input type="password" class="input-field" id="import-master-password-input" placeholder="現在のマスターパスワード">
+            </div>
+            <div id="import-error-message" class="error-message" style="display: none;"></div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="cancel-import-button">❌ キャンセル</button>
+                <button class="btn btn-primary" id="confirm-import-button">⬆️ インポート</button>
             </div>
         </div>
     </div>
